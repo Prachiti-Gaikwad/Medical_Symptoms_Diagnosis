@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Medical Symptoms-to-Diagnosis Agent</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>MediAI</h1>
+                    <p>AI-Powered Medical Diagnosis</p>
+                </div>
+            </div>
+            <div class="header-features">
+                <div class="feature-badge">
+                    <i class="fas fa-brain"></i>
+                    <span>AI Analysis</span>
+                </div>
+                <div class="feature-badge">
+                    <i class="fas fa-globe"></i>
+                    <span>Multilingual</span>
+                </div>
+                <div class="feature-badge">
+                    <i class="fas fa-microphone"></i>
+                    <span>Voice Input</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h2 class="hero-title">Intelligent Symptom Analysis</h2>
+                    <p class="hero-subtitle">Get instant medical insights with our advanced AI-powered symptom checker. Supporting multiple languages and voice input for your convenience.</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">16+</div>
+                            <div class="stat-label">Medical Categories</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">9</div>
+                            <div class="stat-label">Languages</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-label">Available</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="medical-illustration">
+                        <i class="fas fa-stethoscope"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="input-card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-clipboard-list"></i> Describe Your Symptoms</h3>
+                        <p>Be as detailed as possible for better analysis</p>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <textarea 
+                                id="symptomsInput" 
+                                placeholder="Example: I have a severe headache for the past 3 days with dizziness and sensitivity to light..."
+                                rows="4"
+                            ></textarea>
+                            <div class="input-controls">
+                                <button id="voiceInputBtn" class="voice-btn" title="Voice Input">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button id="clearBtn" class="clear-btn" title="Clear">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="voice-status" id="voiceStatus" style="display: none;">
+                            <div class="voice-indicator">
+                                <i class="fas fa-microphone-alt"></i>
+                                <span id="voiceStatusText">Listening...</span>
+                            </div>
+                            <div class="voice-visualizer" id="voiceVisualizer">
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                                <div class="wave"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Language Selection -->
+                    <div class="language-section">
+                        <label for="languageSelect" class="language-label">
+                            <i class="fas fa-language"></i> Language
+                        </label>
+                        <select id="languageSelect" class="language-select">
+                            <option value="en">English</option>
+                            <option value="hi">हिंदी (Hindi)</option>
+                            <option value="bn">বাংলা (Bengali)</option>
+                            <option value="ta">தமிழ் (Tamil)</option>
+                            <option value="te">తెలుగు (Telugu)</option>
+                            <option value="mr">मराठी (Marathi)</option>
+                            <option value="gu">ગુજરાતી (Gujarati)</option>
+                            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                            <option value="ml">മലയാളം (Malayalam)</option>
+                            <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        </select>
+                        <div class="language-info">
+                            <i class="fas fa-info-circle"></i>
+                            Language will be auto-detected from your input
+                        </div>
+                    </div>
+
+                    <button id="analyzeBtn" class="analyze-btn">
+                        <i class="fas fa-search"></i>
+                        <span>Analyze Symptoms</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-content">
+                    <div class="loading-spinner" id="loadingSpinner" style="display: none;">
+                        <div class="spinner">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <p>Analyzing your symptoms...</p>
+                    </div>
+
+                    <div class="error-message" id="errorMessage" style="display: none;">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span id="errorText"></span>
+                    </div>
+
+                    <div class="analysis-results" id="analysisResults" style="display: none;">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section">
+                <h3 class="section-title">Advanced Features (Inspired by Medical Chat)</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>AI-Powered Analysis</h4>
+                        <p>Advanced machine learning algorithms provide accurate symptom analysis and potential diagnoses.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-list-check"></i>
+                        </div>
+                        <h4>Differential Diagnosis (DDx)</h4>
+                        <p>Comprehensive differential diagnosis reports with probability rankings and evidence levels.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-book-medical"></i>
+                        </div>
+                        <h4>Professional Sources</h4>
+                        <p>Cited sources from medical textbooks, journals, and clinical guidelines for every diagnosis.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                        <h4>PubMed Articles</h4>
+                        <p>Search and access relevant medical research articles from PubMed database.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h4>Patient Clinic Plans</h4>
+                        <p>Generate comprehensive patient-specific treatment plans with monitoring schedules.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-microphone"></i>
+                        </div>
+                        <h4>Voice Input</h4>
+                        <p>Speak your symptoms naturally and let our system convert speech to text for analysis.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h4>Multilingual Support</h4>
+                        <p>Support for 9 Indian languages with automatic language detection and translation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-pills"></i>
+                        </div>
+                        <h4>Medicine Recommendations</h4>
+                        <p>Get personalized medicine recommendations including OTC, prescription, and natural remedies.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h4>Emergency Detection</h4>
+                        <p>Automatic detection of emergency conditions with immediate action recommendations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-download"></i>
+                        </div>
+                        <h4>Export Conversations</h4>
+                        <p>Export and import conversation history for continuity of care and documentation.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h4>Custom Prompts</h4>
+                        <p>Create and save custom prompt templates for different medical scenarios.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>HIPAA Compliant</h4>
+                        <p>Industry-standard data encryption and privacy protection for medical information.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Medical Disclaimer</h4>
+                    <p>This application is for educational purposes only. Always consult healthcare professionals for medical advice.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Features</h4>
+                    <ul>
+                        <li>AI Symptom Analysis</li>
+                        <li>Multilingual Support</li>
+                        <li>Voice Input</li>
+                        <li>Medical Sources</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>For medical emergencies, call your local emergency services immediately.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 MediAI - AI-Powered Medical Diagnosis Agent</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html> 
