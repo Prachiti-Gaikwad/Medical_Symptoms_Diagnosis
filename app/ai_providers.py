@@ -318,6 +318,61 @@ Remember: Respond ONLY with valid JSON, no additional text."""
         except Exception as e:
             logger.error(f"Error parsing Hugging Face response: {e}")
             return None
+    
+    def get_chatbot_response(self, prompt: str) -> str:
+        """
+        Get chatbot response using Claude AI
+        
+        Args:
+            prompt: The prompt for the chatbot
+            
+        Returns:
+            Chatbot response as string
+        """
+        try:
+            if not self.claude_api_key:
+                logger.warning("Claude API key not available for chatbot")
+                return "I apologize, but I'm currently unable to provide medical advice. Please use the symptom analysis mode or consult a healthcare professional."
+            
+            headers = {
+                "x-api-key": self.claude_api_key,
+                "anthropic-version": "2023-06-01",
+                "Content-Type": "application/json"
+            }
+            
+            data = {
+                "model": self.claude_model,
+                "max_tokens": 1000,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+            }
+            
+            logger.info("Sending chatbot request to Claude AI...")
+            response = requests.post(self.claude_url, headers=headers, json=data, timeout=30)
+            
+            if response.status_code == 200:
+                response_data = response.json()
+                content = response_data.get('content', [])
+                
+                if content and len(content) > 0:
+                    chatbot_response = content[0].get('text', '').strip()
+                    logger.info("Chatbot response received successfully")
+                    return chatbot_response
+                else:
+                    logger.warning("Empty response from Claude AI")
+                    return "I apologize, but I didn't receive a proper response. Please try again."
+            
+            else:
+                logger.error(f"Claude AI chatbot request failed: {response.status_code}")
+                return "I apologize, but I'm experiencing technical difficulties. Please try again or use the symptom analysis mode."
+                
+        except Exception as e:
+            logger.error(f"Error in chatbot response: {str(e)}")
+            return "I apologize, but I'm having trouble processing your request. Please try again or consult a healthcare professional."
 
 # Global instance
 ai_providers = AIProviders() 

@@ -68,8 +68,125 @@
                 </div>
             </section>
 
+            <!-- Mode Selector -->
+            <section class="mode-selector-section">
+                <div class="mode-selector">
+                    <button class="mode-btn active" id="symptomsModeBtn" onclick="switchMode('symptoms')">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>📋 Symptom Analysis</span>
+                    </button>
+                    <button class="mode-btn" id="chatbotModeBtn" onclick="switchMode('chatbot')">
+                        <i class="fas fa-comments"></i>
+                        <span>🤖 Chat with Doctor.AI</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Chatbot Interface -->
+            <section class="chatbot-section" id="chatbotInterface" style="display: none;">
+                <div class="chatbot-container">
+                    <div class="chat-header">
+                        <div class="chat-header-content">
+                            <div class="chat-avatar">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="chat-info">
+                                <h3>Dr. AI</h3>
+                                <p>Medical Assistant</p>
+                            </div>
+                            <div class="chat-status">
+                                <div class="status-indicator online"></div>
+                                <span>Online</span>
+                            </div>
+                        </div>
+                        <div class="language-indicator" id="languageIndicator" style="display: none;">
+                            <i class="fas fa-globe"></i>
+                            <span id="detectedLanguage">English</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="chat-message doctor">
+                            <div class="message-avatar doctor">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="message-bubble doctor">
+                                                                   <p>Hello! I'm Dr. AI, your multilingual medical assistant. I can communicate in multiple languages including English, Spanish, French, German, Hindi, Bengali, Telugu, Tamil, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Urdu, Chinese, Japanese, Arabic, Portuguese, and Russian. How can I help you today?</p>
+                                <div class="message-time">Just now</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                                         <div class="chat-input-area">
+                         <div class="chat-input-wrapper">
+                             <textarea 
+                                 id="chatInput" 
+                                 placeholder="Describe your symptoms or ask a question..."
+                                 rows="2"
+                             ></textarea>
+                             <div class="chat-controls">
+                                 <button id="imageUploadBtn" class="image-upload-btn" title="Upload Medical Image">
+                                     <i class="fas fa-camera"></i>
+                                 </button>
+                                 <button id="voiceChatBtn" class="voice-chat-btn" title="Voice Chat">
+                                     <i class="fas fa-microphone"></i>
+                                 </button>
+                                 <button id="sendChatBtn" class="send-chat-btn" title="Send Message">
+                                     <i class="fas fa-paper-plane"></i>
+                                 </button>
+                             </div>
+                         </div>
+                         
+                         <!-- Hidden file input for image upload -->
+                         <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
+                         
+                         <!-- Image upload preview -->
+                         <div id="imagePreview" class="image-preview" style="display: none;">
+                             <div class="image-preview-content">
+                                 <img id="previewImage" src="" alt="Preview">
+                                 <div class="image-preview-controls">
+                                     <button id="removeImageBtn" class="remove-image-btn" title="Remove Image">
+                                         <i class="fas fa-times"></i>
+                                     </button>
+                                 </div>
+                             </div>
+                                                           <div class="image-description">
+                                  <div class="image-query-section">
+                                      <label for="imageDescription" class="image-query-label">
+                                          <i class="fas fa-question-circle"></i>
+                                          Ask about this image:
+                                      </label>
+                                      <textarea 
+                                          id="imageDescription" 
+                                          placeholder="Example: What could this rash be? Is this normal? Should I be concerned about this mole? What treatment do you recommend?"
+                                          rows="3"
+                                      ></textarea>
+                                      <div class="image-query-tips">
+                                          <p><i class="fas fa-lightbulb"></i> <strong>Tips:</strong></p>
+                                          <ul>
+                                              <li>Describe your symptoms or concerns</li>
+                                              <li>Ask specific questions about the condition</li>
+                                              <li>Mention duration, pain level, or other details</li>
+                                              <li>Ask about treatment options or urgency</li>
+                                          </ul>
+                                      </div>
+                                  </div>
+                                  <button id="analyzeImageBtn" class="analyze-image-btn">
+                                      <i class="fas fa-search"></i>
+                                      Analyze Image & Answer Query
+                                  </button>
+                              </div>
+                         </div>
+                         
+                                                      <div class="chat-tips">
+                                 <p><i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Be specific about your symptoms for better assistance. You can also upload medical images for analysis! I can communicate in multiple languages including Indian languages (Hindi, Bengali, Telugu, Tamil, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Urdu) - just type in your preferred language.</p>
+                             </div>
+                     </div>
+                </div>
+            </section>
+
             <!-- Input Section -->
-            <section class="input-section">
+            <section class="input-section" id="symptomsInterface">
                 <div class="input-card">
                     <div class="card-header">
                         <h3><i class="fas fa-clipboard-list"></i> Describe Your Symptoms</h3>

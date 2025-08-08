@@ -3,6 +3,9 @@ let currentLanguage = 'en';
 let currentDiagnoses = []; // Store current diagnoses for modal access
 let isRecording = false;
 let recognition = null;
+let currentMode = 'symptoms'; // Current mode: 'symptoms' or 'chatbot'
+let chatSessionId = null; // Chat session identifier
+let selectedImageFile = null; // Selected image file for upload
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function() {
@@ -766,4 +769,427 @@ function closeDiseaseModal() {
     if (modal) {
         modal.remove();
     }
+}
+
+// ===== CHATBOT FUNCTIONS =====
+
+// Switch between symptoms analysis and chatbot modes
+function switchMode(mode) {
+    currentMode = mode;
+    
+    // Update mode buttons
+    const symptomsBtn = document.getElementById('symptomsModeBtn');
+    const chatbotBtn = document.getElementById('chatbotModeBtn');
+    
+    if (symptomsBtn && chatbotBtn) {
+        symptomsBtn.classList.remove('active');
+        chatbotBtn.classList.remove('active');
+        
+        if (mode === 'symptoms') {
+            symptomsBtn.classList.add('active');
+        } else {
+            chatbotBtn.classList.add('active');
+        }
+    }
+    
+    // Show/hide interfaces
+    const symptomsInterface = document.getElementById('symptomsInterface');
+    const chatbotInterface = document.getElementById('chatbotInterface');
+    
+    if (symptomsInterface && chatbotInterface) {
+        if (mode === 'symptoms') {
+            symptomsInterface.style.display = 'block';
+            chatbotInterface.style.display = 'none';
+        } else {
+            symptomsInterface.style.display = 'none';
+            chatbotInterface.style.display = 'block';
+            initializeChatbot();
+        }
+    }
+}
+
+// Initialize chatbot
+function initializeChatbot() {
+    if (!chatSessionId) {
+        chatSessionId = Date.now().toString();
+    }
+    
+    // Clear previous messages
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) {
+        chatMessages.innerHTML = '';
+    }
+    
+    // Add welcome message
+    addChatMessage('doctor', 'Hello! I\'m Dr. AI, your virtual medical assistant. How can I help you today? Feel free to describe your symptoms or ask any health-related questions.');
+    
+    // Setup chatbot event listeners
+    setupChatbotEventListeners();
+}
+
+// Setup chatbot event listeners
+function setupChatbotEventListeners() {
+    // Send button
+    const sendBtn = document.getElementById('sendChatBtn');
+    if (sendBtn) {
+        sendBtn.addEventListener('click', sendChatMessage);
+    }
+    
+    // Enter key in chat input
+    const chatInput = document.getElementById('chatInput');
+    if (chatInput) {
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        });
+    }
+    
+    // Voice chat button
+    const voiceChatBtn = document.getElementById('voiceChatBtn');
+    if (voiceChatBtn) {
+        voiceChatBtn.addEventListener('click', startVoiceChat);
+    }
+    
+    // Image upload button
+    const imageUploadBtn = document.getElementById('imageUploadBtn');
+    if (imageUploadBtn) {
+        imageUploadBtn.addEventListener('click', function() {
+            document.getElementById('imageFileInput').click();
+        });
+    }
+    
+    // File input change
+    const imageFileInput = document.getElementById('imageFileInput');
+    if (imageFileInput) {
+        imageFileInput.addEventListener('change', handleImageSelection);
+    }
+    
+    // Remove image button
+    const removeImageBtn = document.getElementById('removeImageBtn');
+    if (removeImageBtn) {
+        removeImageBtn.addEventListener('click', removeSelectedImage);
+    }
+    
+    // Analyze image button
+    const analyzeImageBtn = document.getElementById('analyzeImageBtn');
+    if (analyzeImageBtn) {
+        analyzeImageBtn.addEventListener('click', analyzeSelectedImage);
+    }
+}
+
+// Send chat message
+async function sendChatMessage() {
+    const chatInput = document.getElementById('chatInput');
+    const message = chatInput.value.trim();
+    
+    if (!message) return;
+    
+    // Add user message to chat
+    addChatMessage('user', message);
+    chatInput.value = '';
+    
+    // Show typing indicator
+    showTypingIndicator();
+    
+    try {
+        const response = await fetch('/chat_with_doctor', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                session_id: chatSessionId
+            })
+        });
+        
+        const data = await response.json();
+        
+        // Hide typing indicator
+        hideTypingIndicator();
+        
+        if (data.success) {
+            // Add doctor response to chat
+            addChatMessage('doctor', data.response);
+            
+            // Update session ID if provided
+            if (data.session_id) {
+                chatSessionId = data.session_id;
+            }
+            
+            // Log language detection if available
+            if (data.detected_language) {
+                console.log(`🌍 Language detected: ${data.detected_language}`);
+                updateLanguageIndicator(data.detected_language);
+            }
+        } else {
+            // Add error message to chat
+            addChatMessage('doctor', data.response || 'I apologize, but I\'m having trouble processing your request. Please try again.');
+        }
+        
+    } catch (error) {
+        console.error('Chat error:', error);
+        hideTypingIndicator();
+        addChatMessage('doctor', 'I apologize, but I\'m experiencing technical difficulties. Please try again later.');
+    }
+}
+
+// Add message to chat
+function addChatMessage(sender, message) {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${sender}`;
+    
+    const avatar = document.createElement('div');
+    avatar.className = `message-avatar ${sender}`;
+    avatar.innerHTML = sender === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-user-md"></i>';
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.textContent = message;
+    
+    const time = document.createElement('div');
+    time.className = 'message-time';
+    time.textContent = new Date().toLocaleTimeString();
+    
+    bubble.appendChild(time);
+    messageDiv.appendChild(avatar);
+    messageDiv.appendChild(bubble);
+    
+    chatMessages.appendChild(messageDiv);
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Show typing indicator
+function showTypingIndicator() {
+    const chatMessages = document.getElementById('chatMessages');
+    if (!chatMessages) return;
+    
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'chat-message doctor typing-indicator';
+    typingDiv.id = 'typingIndicator';
+    
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar doctor';
+    avatar.innerHTML = '<i class="fas fa-user-md"></i>';
+    
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div>';
+    
+    typingDiv.appendChild(avatar);
+    typingDiv.appendChild(bubble);
+    chatMessages.appendChild(typingDiv);
+    
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Hide typing indicator
+function hideTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+// Start voice chat
+function startVoiceChat() {
+    if (!recognition) {
+        showNotification('Voice recognition not available in this browser', 'error');
+        return;
+    }
+    
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        const chatInput = document.getElementById('chatInput');
+        if (chatInput) {
+            chatInput.value = transcript;
+        }
+        showNotification('Voice input received: ' + transcript, 'success');
+    };
+    
+    recognition.start();
+    showNotification('Voice chat activated - speak now', 'info');
+}
+
+// Image handling functions
+function handleImageSelection(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/bmp', 'image/tiff', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+        showNotification('Please select a valid image file (JPEG, PNG, BMP, TIFF, or WebP)', 'error');
+        return;
+    }
+    
+    // Validate file size (10MB max)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+        showNotification('Image file is too large. Please select an image smaller than 10MB', 'error');
+        return;
+    }
+    
+    selectedImageFile = file;
+    displayImagePreview(file);
+    showNotification('Image selected successfully', 'success');
+}
+
+function displayImagePreview(file) {
+    const preview = document.getElementById('imagePreview');
+    const previewImage = document.getElementById('previewImage');
+    
+    if (!preview || !previewImage) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        previewImage.src = e.target.result;
+        preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+}
+
+function removeSelectedImage() {
+    selectedImageFile = null;
+    const preview = document.getElementById('imagePreview');
+    const fileInput = document.getElementById('imageFileInput');
+    
+    if (preview) {
+        preview.style.display = 'none';
+    }
+    if (fileInput) {
+        fileInput.value = '';
+    }
+    
+    showNotification('Image removed', 'info');
+}
+
+async function analyzeSelectedImage() {
+    if (!selectedImageFile) {
+        showNotification('Please select an image first', 'error');
+        return;
+    }
+    
+    const description = document.getElementById('imageDescription')?.value || '';
+    
+    // Show loading state
+    const analyzeBtn = document.getElementById('analyzeImageBtn');
+    if (analyzeBtn) {
+        analyzeBtn.disabled = true;
+        analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing Image...';
+    }
+    
+    // Show typing indicator in chat
+    showTypingIndicator();
+    
+    try {
+        const formData = new FormData();
+        formData.append('image', selectedImageFile);
+        formData.append('description', description);
+        formData.append('session_id', chatSessionId || '');
+        
+        const response = await fetch('/analyze_image', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        // Hide typing indicator
+        hideTypingIndicator();
+        
+        if (data.success) {
+            // Create user message based on what they uploaded
+            let userMessage = '[Image Upload]';
+            if (description.trim()) {
+                userMessage += ` ${description}`;
+            } else {
+                userMessage += ' Medical image uploaded for analysis';
+            }
+            
+            // Add image upload message to chat
+            addChatMessage('user', userMessage);
+            
+            // Add analysis response to chat
+            addChatMessage('doctor', data.chat_response);
+            
+            // Update session ID if provided
+            if (data.session_id) {
+                chatSessionId = data.session_id;
+            }
+            
+            // Log language detection if available
+            if (data.detected_language) {
+                console.log(`🌍 Language detected for image analysis: ${data.detected_language}`);
+                updateLanguageIndicator(data.detected_language);
+            }
+            
+            // Clear the image selection
+            removeSelectedImage();
+            
+            showNotification('Image analysis completed successfully!', 'success');
+        } else {
+            addChatMessage('doctor', `Image analysis failed: ${data.error || 'Unknown error'}`);
+            showNotification('Image analysis failed', 'error');
+        }
+        
+    } catch (error) {
+        console.error('Image analysis error:', error);
+        hideTypingIndicator();
+        addChatMessage('doctor', 'I apologize, but I\'m having trouble analyzing the image. Please try again or describe your symptoms in text.');
+        showNotification('Image analysis failed', 'error');
+    } finally {
+        // Reset button state
+        if (analyzeBtn) {
+            analyzeBtn.disabled = false;
+            analyzeBtn.innerHTML = '<i class="fas fa-search"></i> Analyze Image & Answer Query';
+        }
+    }
 } 
+
+       function updateLanguageIndicator(language) {
+           const languageIndicator = document.getElementById('languageIndicator');
+           const detectedLanguageSpan = document.getElementById('detectedLanguage');
+
+           if (languageIndicator && detectedLanguageSpan) {
+               // Enhanced language name mapping for Indian languages
+               const languageNames = {
+                   'en': 'English',
+                   'es': 'Spanish',
+                   'fr': 'French',
+                   'de': 'German',
+                   'hi': 'Hindi',
+                   'bn': 'Bengali',
+                   'te': 'Telugu',
+                   'ta': 'Tamil',
+                   'mr': 'Marathi',
+                   'gu': 'Gujarati',
+                   'kn': 'Kannada',
+                   'ml': 'Malayalam',
+                   'pa': 'Punjabi',
+                   'ur': 'Urdu',
+                   'zh': 'Chinese',
+                   'ja': 'Japanese',
+                   'ar': 'Arabic',
+                   'pt': 'Portuguese',
+                   'ru': 'Russian'
+               };
+
+               const languageName = languageNames[language] || language.toUpperCase();
+               detectedLanguageSpan.textContent = languageName;
+               languageIndicator.style.display = 'flex';
+
+               // Hide indicator after 5 seconds
+               setTimeout(() => {
+                   languageIndicator.style.display = 'none';
+               }, 5000);
+           }
+       } 
