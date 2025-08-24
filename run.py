@@ -13,15 +13,11 @@ if __name__ == '__main__':
     print("🚀 Starting Medical Symptoms-to-Diagnosis Agent...")
     print("📋 This application is for educational purposes only.")
     print("⚠️  Always consult healthcare professionals for medical advice.")
-    
-    # Get port from environment variable (Render provides this)
-    port = int(os.environ.get('PORT', 5000))
-    
-    print(f"🌐 Access the application at: http://localhost:{port}")
+    print("🌐 Access the application at: http://localhost:5000")
     print("=" * 60)
     
     app.run(
         host='0.0.0.0',
-        port=port,
-        debug=False  # Set to False for production
+        port=5000,
+        debug=True  # Set to True for local development
     ) 
