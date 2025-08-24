@@ -137,33 +137,6 @@ Medical-Symptoms-Diagnosis-Agent/
 └── README.md                    # Project documentation
 ```
 
-## 🚀 Deployment
-
-### Easy Deployment Options
-
-#### Railway (Recommended - Easiest)
-1. Go to [railway.app](https://railway.app)
-2. Sign up with GitHub
-3. Click "New Project" → "Deploy from GitHub repo"
-4. Select your repository
-5. Railway will auto-detect Python and deploy
-6. Get your live URL in 2-3 minutes
-
-#### Render
-1. Go to [render.com](https://render.com)
-2. Click "New +" → "Web Service"
-3. Connect your GitHub repository
-4. Configure with Python 3
-5. Click "Create Web Service"
-
-#### Vercel
-1. Go to [vercel.com](https://vercel.com)
-2. Sign up with GitHub
-3. Click "New Project"
-4. Import your GitHub repository
-5. Vercel will auto-detect Python
-6. Deploy in 2 minutes
-
 ## 📊 Performance
 
 - **Response Time**: < 5 seconds for complete analysis
@@ -220,8 +193,8 @@ This project is licensed under the MIT License.
 
 ## 🎉 Project Status
 
-**✅ FULLY OPERATIONAL**
+**✅ FULLY OPERATIONAL - LOCAL DEVELOPMENT**
 
-The Medical Symptoms-to-Diagnosis Agent is a complete, production-ready system with advanced AI analysis, multilingual support, medical image recognition, and comprehensive medical recommendations.
+The Medical Symptoms-to-Diagnosis Agent is a complete, locally-run system with advanced AI analysis, multilingual support, medical image recognition, and comprehensive medical recommendations.
 
-**Ready for educational use and further development!** 🚀 
+**Ready for local educational use and development!** 🚀 
