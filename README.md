@@ -18,6 +18,10 @@ A Flask-based web application that analyzes medical symptoms and provides potent
 
 3. **Access your app at:** `http://localhost:5000`
 
+## 🚀 Deploy Online
+
+Want to make your app live on the internet? Check out the **[Easy Deployment Guide](DEPLOYMENT.md)** for simple step-by-step instructions!
+
 ## 📋 Features
 
 - Symptom analysis and diagnosis
