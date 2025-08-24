@@ -2,31 +2,47 @@
 
 A Flask-based web application that analyzes medical symptoms and provides potential diagnoses using AI.
 
-## 🚀 Deploy on Render
+## 🐳 Deploy with Docker
 
-### Quick Deployment Steps:
+### Quick Docker Deployment:
 
-1. **Fork/Clone this repository**
-2. **Go to [render.com](https://render.com)**
-3. **Click "New +" → "Web Service"**
-4. **Connect your GitHub repository**
-5. **Configure**:
-   - **Name**: `medical-symptoms-agent`
-   - **Environment**: `Docker`
-   - **Dockerfile Path**: `./Dockerfile`
-   - **Plan**: `Free`
+1. **Build the Docker image:**
+   ```bash
+   docker build -t medical-symptoms-agent .
+   ```
+
+2. **Run the container:**
+   ```bash
+   docker run -p 5000:5000 medical-symptoms-agent
+   ```
+
+3. **Access your app at:** `http://localhost:5000`
+
+### Deploy to Cloud Platforms:
+
+#### **Railway (Recommended)**
+1. Go to [railway.app](https://railway.app)
+2. Click "New Project" → "Deploy from GitHub repo"
+3. Select your repository
+4. Railway will auto-detect Docker and deploy
+
+#### **Fly.io**
+1. Install Fly CLI: `curl -L https://fly.io/install.sh | sh`
+2. Login: `fly auth login`
+3. Deploy: `fly launch`
+4. Follow prompts
+
+#### **Google Cloud Run**
+1. Build and push to Google Container Registry
+2. Deploy to Cloud Run
+3. Get your live URL
 
 ### Environment Variables (Optional):
-
-Add these in Render dashboard:
 ```
 FLASK_ENV=production
 FLASK_DEBUG=false
 SECRET_KEY=your-secret-key-here
 ```
-
-### Your app will be live at:
-`https://your-app-name.onrender.com`
 
 ## 🏃‍♂️ Run Locally
 
