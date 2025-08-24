@@ -1,11 +1,8 @@
-# 🐳 Docker Deployment Guide
+# 🚀 Render Deployment Guide
 
-## 🚀 Deploy Using Docker (Recommended for Render)
+## Quick Deploy on Render
 
-Since Render's Python build is having issues, we're using Docker deployment instead.
-
-### **Step 1: Render Docker Deployment**
-
+### Step 1: Deploy
 1. **Go to [render.com](https://render.com)**
 2. **Click "New +" → "Web Service"**
 3. **Connect your GitHub repository**
@@ -15,40 +12,16 @@ Since Render's Python build is having issues, we're using Docker deployment inst
    - **Dockerfile Path**: `./Dockerfile`
    - **Plan**: `Free`
 
-### **Step 2: Environment Variables**
-
-In Render dashboard, add these environment variables:
+### Step 2: Environment Variables (Optional)
+Add in Render dashboard:
 ```
 FLASK_ENV=production
 FLASK_DEBUG=false
 SECRET_KEY=your-secret-key-here
 ```
 
-### **Step 3: Deploy**
+### Step 3: Deploy
+Click "Create Web Service"
 
-Click "Create Web Service" and wait for deployment.
-
-## 🎯 **Why Docker Works Better**
-
-- ✅ **No Python version conflicts** - Uses Python 3.10 in container
-- ✅ **No build wheel errors** - Docker handles dependencies
-- ✅ **Consistent environment** - Same everywhere
-- ✅ **No setup.py issues** - Clean container build
-
-## 📋 **Files for Docker Deployment**
-
-- `Dockerfile` - Container configuration
-- `requirements-minimal.txt` - Minimal dependencies
-- `render.yaml` - Docker deployment config
-
-## 🆘 **If Docker Fails**
-
-**Try Vercel instead** - Often more reliable:
-1. Go to [vercel.com](https://vercel.com)
-2. Import your GitHub repo
-3. Deploy in 2-3 minutes
-
-## 🎉 **Success**
-
-Once deployed, your app will be live at:
-`https://your-app-name.onrender.com`
+## 🎉 Success
+Your app will be live at: `https://your-app-name.onrender.com`
