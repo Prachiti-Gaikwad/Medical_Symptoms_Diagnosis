@@ -5,7 +5,6 @@ A comprehensive AI-powered web application that analyzes medical symptoms and pr
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![Flask](https://img.shields.io/badge/Flask-2.0+-green.svg)](https://flask.palletsprojects.com)
 [![AI-Powered](https://img.shields.io/badge/AI--Powered-Claude%203.5-orange.svg)](https://anthropic.com)
-[![Deploy on Vercel](https://img.shields.io/badge/Deploy%20on-Vercel-black.svg)](https://vercel.com)
 
 ## 🌟 Features
 
@@ -46,7 +45,7 @@ A comprehensive AI-powered web application that analyzes medical symptoms and pr
 - pip (Python package installer)
 - Internet connection for API access
 
-### Local Development
+### Installation
 
 1. **Clone the repository**
    ```bash
@@ -67,38 +66,6 @@ A comprehensive AI-powered web application that analyzes medical symptoms and pr
 4. **Access the application**
    - Open your web browser
    - Navigate to: `http://localhost:5000`
-
-## 🚀 Deployment
-
-### Vercel Deployment (Recommended)
-
-1. **Go to [vercel.com](https://vercel.com)**
-2. **Sign up/Login** with your GitHub account
-3. **Click "New Project"**
-4. **Import your GitHub repository**: `Prachiti-Gaikwad/Medical_Symptoms_Diagnosis`
-5. **Vercel will auto-detect Python** and configure the build
-6. **Add Environment Variables** (optional):
-   - `CLAUDE_API_KEY`: Your Claude AI API key
-   - `TOGETHER_API_KEY`: Your Together AI API key
-   - `HUGGINGFACE_API_KEY`: Your Hugging Face API key
-7. **Click "Deploy"**
-8. **Get your live URL** in 2-3 minutes
-
-### Alternative Deployment Options
-
-#### Railway
-1. Go to [railway.app](https://railway.app)
-2. Sign up with GitHub
-3. Click "New Project" → "Deploy from GitHub repo"
-4. Select your repository
-5. Railway will auto-detect Python and deploy
-
-#### Render
-1. Go to [render.com](https://render.com)
-2. Click "New +" → "Web Service"
-3. Connect your GitHub repository
-4. Configure with Python 3
-5. Click "Create Web Service"
 
 ## 🔧 Configuration
 
@@ -167,7 +134,6 @@ Medical-Symptoms-Diagnosis-Agent/
 ├── config.py                    # Configuration and API keys
 ├── run.py                       # Application entry point
 ├── requirements.txt             # Python dependencies
-├── vercel.json                  # Vercel deployment configuration
 └── README.md                    # Project documentation
 ```
 
@@ -227,8 +193,8 @@ This project is licensed under the MIT License.
 
 ## 🎉 Project Status
 
-**✅ FULLY OPERATIONAL - READY FOR DEPLOYMENT**
+**✅ FULLY OPERATIONAL - LOCAL DEVELOPMENT**
 
-The Medical Symptoms-to-Diagnosis Agent is a complete, production-ready system with advanced AI analysis, multilingual support, medical image recognition, and comprehensive medical recommendations.
+The Medical Symptoms-to-Diagnosis Agent is a complete, locally-run system with advanced AI analysis, multilingual support, medical image recognition, and comprehensive medical recommendations.
 
-**Ready for local development and cloud deployment!** 🚀 
+**Ready for local educational use and development!** 🚀 
